@@ -6,6 +6,39 @@
 
 它尤其适合这样的场景：OpenClaw 或 Hermes 部署在远端，但仍然需要按需触发你本地 macOS 上才有的工具、脚本或命令。
 
+## 架构图
+
+```mermaid
+flowchart LR
+    A["OpenClaw / Hermes / 远端工作流"] --> B["远端 wrapper（~/.local/bin）"]
+    B --> C["反向 SSH 隧道"]
+    C --> D["你 Mac 上的 remote2mac agent"]
+    D --> E["本机白名单二进制"]
+    E --> F["stdout / stderr / exit code"]
+    F --> A
+```
+
+## Demo
+
+示例：远端服务调用你 Mac 上本地安装的 `remindctl`。
+
+远端执行：
+
+```bash
+remindctl
+```
+
+示例输出：
+
+```text
+[1] [ ] 复盘 OpenClaw 日志 [运维] — 2026年4月18日 09:00
+[2] [ ] 整理 Hermes 提示词 [科研] — 2026年4月19日 14:30
+[3] [ ] 更新 Apple Developer 证书 [管理] — 2026年4月21日
+[4] [ ] 检查本地自动化健康状态 [维护] — 2026年4月22日 20:00
+```
+
+命令是在远端触发的，但实际执行的二进制仍然在你的本机 Mac 上。
+
 ## 功能特性
 
 - 在本机启动一个绑定到 `127.0.0.1` 的 FastAPI agent

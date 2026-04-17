@@ -6,6 +6,39 @@
 
 It is especially useful when services such as OpenClaw or Hermes are deployed remotely but still need to invoke local macOS-only tools, scripts, or commands on demand.
 
+## Architecture
+
+```mermaid
+flowchart LR
+    A["OpenClaw / Hermes / Remote workflow"] --> B["Remote wrapper in ~/.local/bin"]
+    B --> C["Reverse SSH tunnel"]
+    C --> D["remote2mac agent on your Mac"]
+    D --> E["Whitelisted local binary"]
+    E --> F["stdout / stderr / exit code"]
+    F --> A
+```
+
+## Demo
+
+Example: a remote service calls local `remindctl` on your Mac.
+
+Remote side:
+
+```bash
+remindctl
+```
+
+Example output:
+
+```text
+[1] [ ] Review OpenClaw logs [Ops] — Apr 18, 2026 09:00
+[2] [ ] Prepare Hermes prompt set [Research] — Apr 19, 2026 14:30
+[3] [ ] Renew Apple Developer certificate [Admin] — Apr 21, 2026
+[4] [ ] Check local automation health [Maintenance] — Apr 22, 2026 20:00
+```
+
+The command is invoked remotely, but the actual binary runs on your local Mac.
+
 ## Features
 
 - Runs a local FastAPI agent bound to `127.0.0.1`
